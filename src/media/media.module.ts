@@ -7,7 +7,7 @@ import { Media, MediaSchema} from './schema/media.schema';
 
 @Module({
   imports: [MulterModule.register({
-    dest: './public/image',
+    dest: './public/media',
   }),
   MongooseModule.forFeature([{name:Media.name,schema:MediaSchema}])],
   controllers: [MediaController, PrivateMediaController],

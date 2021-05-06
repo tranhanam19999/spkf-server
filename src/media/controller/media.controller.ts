@@ -26,9 +26,9 @@ export class MediaController {
 
   @Post('upload')
   @UseInterceptors(
-    FileInterceptor('file-name', {
+    FileInterceptor('files', {
       storage: diskStorage({
-        destination: './public/image',
+        destination: './public/media',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
@@ -43,9 +43,16 @@ export class MediaController {
     postId: "",
     url: `http://${req.get('host')}/image/${file.filename}`,
     }
+    const  result=await this.mediaService.create(newMedia)
+    console.log(result)
     return {
       code:200,
-      result:await this.mediaService.create(newMedia)
+      result:{
+        url:result.get('url'),
+        name:result.get('name'),
+        createdDate:result.get('createdDate'),
+        type:result.get('type')
+      }
     }
   }
 
@@ -53,7 +60,7 @@ export class MediaController {
   @UseInterceptors(
     FileInterceptor('file-name', {
       storage: diskStorage({
-        destination: './public/image',
+        destination: './public/media',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
@@ -67,32 +74,11 @@ export class MediaController {
     postId: id,
     url: `http://${req.get('host')}/image/${file.filename}`,
     }
+    const result=await this.mediaService.create(newMedia)
     return {
       code:200,
       result:await this.mediaService.create(newMedia)
     }
-  }
-
-  @Post('multiple')
-  @UseInterceptors(
-    FilesInterceptor('image', 20, {
-      storage: diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadMultipleFiles(@UploadedFiles() files) {
-    const response = [];
-    files.forEach(file => {
-      const fileReponse = {
-        originalname: file.originalname,
-        filename: file.filename,
-      };
-      response.push(fileReponse);
-    });
-    return response;
   }
 
   @Get(':imgpath')
